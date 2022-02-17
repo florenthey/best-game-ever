@@ -48,7 +48,6 @@ const App = () => {
     }
   });
 
-  console.log(game);
   return (
     <div>
       <h1>Phaser test</h1>
