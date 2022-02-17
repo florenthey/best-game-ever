@@ -10,37 +10,28 @@ const App = () => {
   let hamster;
   let cursors;
 
-  // Je set mes assets
   function preload() {
     this.load.image("hamster", "/sprites/hamster.png");
   }
 
-  // J'ajoute des propriétés et évènements à mes objets'
   function create() {
     hamster = this.physics.add.image(200, 400, "hamster");
     hamster.body.collideWorldBounds = true;
     cursors = this.input.keyboard.createCursorKeys();
   }
-  console.log("cursors", cursors);
 
-  // Intéractions
   function update() {
     hamster.setVelocityX(0);
     if (cursors.up.isDown) {
-      console.log("cursors");
       hamster.setVelocity(0, -300);
     }
     if (cursors.left.isDown) {
-      console.log("cursors");
       hamster.setVelocity(-100, 0);
     }
     if (cursors.right.isDown) {
-      console.log("cursors");
       hamster.setVelocity(100, 0);
     }
   }
-
-  console.log("GAME", game);
 
   const config = {
     width: "100%",
