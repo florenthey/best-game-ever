@@ -8,63 +8,89 @@ const App = () => {
   const [game, setGame] = useState(null);
 
   let cursors;
-  let catFighter;
+  let dude;
+  let platform;
 
   function preload() {
-    this.load.spritesheet("catFighter", "/sprites/catFighter.png", {
-      frameWidth: 64,
-      frameHeight: 64,
+    this.load.image("sky", "assets/sky.png");
+    this.load.image("ground", "assets/plateform.png");
+    this.load.image("star", "assets/star.png");
+    this.load.spritesheet("dude", "/assets/sprites/dude.png", {
+      frameWidth: 32,
+      frameHeight: 48,
     });
   }
 
   function create() {
-    catFighter = this.physics.add.sprite(600, 370, "catFighter");
-    catFighter.body.collideWorldBounds = true;
-    catFighter.setScale(4);
+    this.add.image(400, 300, "sky");
+    this.add.image(400, 100, "star");
+
+    platform = this.physics.add.staticGroup();
+    platform.create(400, 568, "ground").setScale(2).refreshBody();
+    platform.create(600, 500, "ground");
+    platform.create(700, 400, "ground");
+    platform.create(500, 300, "ground");
+    platform.create(400, 200, "ground");
+
+    dude = this.physics.add.sprite(100, 450, "dude");
+
+    dude.setBounce(0.2);
+    dude.setCollideWorldBounds(true);
+
+    this.anims.create({
+      key: "left",
+      frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "turn",
+      frames: [{ key: "dude", frame: 4 }],
+      frameRate: 20,
+    });
+
+    this.anims.create({
+      key: "right",
+      frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.physics.add.collider(dude, platform);
 
     cursors = this.input.keyboard.createCursorKeys();
-
-    this.anims.create({
-      key: "idle",
-      frames: this.anims.generateFrameNumbers("catFighter", {
-        frames: [0, 1, 2, 3],
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "walk",
-      frames: this.anims.generateFrameNumbers("catFighter", {
-        frames: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    catFighter.play("idle");
   }
 
   function update() {
-    catFighter.setVelocityX(0);
-    const onFloor = catFighter.body.onFloor();
+    const onFloor = dude.body.onFloor();
 
+    if (cursors.left.isDown) {
+      dude.setVelocityX(-160);
+
+      dude.anims.play("left", true);
+    } else if (cursors.right.isDown) {
+      dude.setVelocityX(160);
+
+      dude.anims.play("right", true);
+    } else {
+      dude.setVelocityX(0);
+
+      dude.anims.play("turn");
+    }
     if (onFloor && cursors.up.isDown) {
-      catFighter.setVelocity(0, -300);
-    }
-    if (onFloor && cursors.left.isDown) {
-      catFighter.setVelocity(-300, 0);
-    }
-    if (onFloor && cursors.right.isDown) {
-      catFighter.setVelocity(300, 0);
+      dude.setVelocity(0, -330);
     }
   }
 
   const config = {
-    width: "100%",
-    height: 550,
     type: Phaser.AUTO,
-    physics: { default: "arcade", arcade: { gravity: { y: 450 } } },
+    width: 800,
+    height: 600,
+    physics: {
+      default: "arcade",
+      arcade: { gravity: { y: 450 }, debug: false },
+    },
     scene: { preload, create, update },
   };
 
