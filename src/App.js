@@ -10,10 +10,16 @@ const App = () => {
   let cursors;
   let dude;
   let platform;
+  let stars;
+  let score = 0;
+  let scoreText;
+  let level = 1;
+  let levelText;
+  // let gameOver;
 
   function preload() {
     this.load.image("sky", "assets/sky.png");
-    this.load.image("ground", "assets/plateform.png");
+    this.load.image("ground", "assets/platform.png");
     this.load.image("star", "assets/star.png");
     this.load.spritesheet("dude", "/assets/sprites/dude.png", {
       frameWidth: 32,
@@ -23,7 +29,26 @@ const App = () => {
 
   function create() {
     this.add.image(400, 300, "sky");
-    this.add.image(400, 100, "star");
+
+    stars = this.physics.add.group({
+      key: "star",
+      repeat: 11,
+      setXY: { x: 12, y: 0, stepX: 70 },
+    });
+
+    scoreText = this.add.text(16, 16, "score: 0", {
+      fontSize: "32px",
+      fill: "#000",
+    });
+
+    levelText = this.add.text(625, 16, "level: 1", {
+      fontSize: "32px",
+      fill: "#000",
+    });
+
+    stars.children.iterate(function (child) {
+      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    });
 
     platform = this.physics.add.staticGroup();
     platform.create(400, 568, "ground").setScale(2).refreshBody();
@@ -57,7 +82,22 @@ const App = () => {
       repeat: -1,
     });
 
+    this.physics.add.collider(stars, platform);
     this.physics.add.collider(dude, platform);
+
+    this.physics.add.overlap(dude, stars, collectStar, null, this);
+
+    function collectStar(dude, star) {
+      star.disableBody(true, true);
+
+      score += 10;
+      scoreText.setText("Score: " + score);
+
+      if (stars.countActive(true) === 0) {
+        level += 1;
+        levelText.setText("level: " + level);
+      }
+    }
 
     cursors = this.input.keyboard.createCursorKeys();
   }
