@@ -112,13 +112,6 @@ const App = () => {
       plouf = this.sound.add("plouf");
       cling = this.sound.add("cling");
       this.add.image(400, 300, "sky");
-      // lava.create(400, 568, "lava").setScale(2).refreshBody();
-
-      // stars = this.physics.add.group({
-      //   key: "star",
-      //   repeat: 11,
-      //   setXY: { x: 12, y: 0, stepX: 70 },
-      // });
 
       scoreText = this.add.text(16, 16, "score: 0", {
         fontSize: "32px",
@@ -130,10 +123,6 @@ const App = () => {
         fill: "#000",
       });
 
-      // stars.children.iterate(function (child) {
-      //   child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-      // });
-
       stars = this.physics.add.staticGroup();
       stars.create(550, 400, "star");
       stars.create(650, 300, "star");
@@ -142,7 +131,6 @@ const App = () => {
       stars.create(500, 250, "star");
 
       platform2 = this.physics.add.staticGroup();
-      // platform.create(400, 568, "ground").setScale(2).refreshBody();
       platform2.create(550, 450, "ground2");
       platform2.create(650, 350, "ground2");
       platform2.create(100, 200, "ground2");
@@ -168,6 +156,7 @@ const App = () => {
 
       function thisIsTheEnd() {
         plouf.play();
+        music.stop();
         score = 0;
         this.scene.start(scenes.first);
       }
@@ -186,7 +175,6 @@ const App = () => {
             fontSize: "32px",
             fill: "#000",
           });
-          // setTimeout(this.scene.start(scenes.first), 5000);
         }
       }
 
@@ -262,9 +250,6 @@ const App = () => {
     },
   };
 
-  // const sceneDisplay = () => {};
-
-  // let gameOver;
   const config = {
     type: Phaser.AUTO,
     width: 800,
@@ -274,7 +259,6 @@ const App = () => {
       arcade: { gravity: { y: 450 }, debug: false },
     },
     scene: bootScene,
-    // scene: { preload, create, update },
   };
 
   useEffect(() => {
