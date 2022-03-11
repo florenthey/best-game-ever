@@ -21,15 +21,24 @@ const App = () => {
   let cling;
   let music;
   let musicConfig = { volume: 0.6 };
+
   const scenes = {
     first: "FirstScene",
     second: "SecondScene",
+    sound: "SoundScene",
+  };
+
+  const sceneSound = {
+    create: function () {
+      music = this.sound.add("music");
+      music.play(musicConfig);
+    },
   };
 
   const sceneOne = {
     create: function () {
-      music = this.sound.add("music");
-      music.play(musicConfig);
+      music.pause();
+      music.play();
       cling = this.sound.add("cling");
       this.add.image(400, 300, "sky");
 
@@ -156,8 +165,8 @@ const App = () => {
 
       function thisIsTheEnd() {
         plouf.play();
-        music.stop();
         score = 0;
+        music.pause();
         this.scene.start(scenes.first);
       }
 
@@ -222,10 +231,11 @@ const App = () => {
     },
 
     create: function () {
+      this.scene.add(scenes.sound, sceneSound, true);
       this.scene.add(scenes.first, sceneOne, true);
       this.scene.add(scenes.second, sceneTwo, false);
 
-      this.scene.run(scenes.first);
+      this.scene.run(scenes.first, scenes.sound);
     },
 
     update: function () {
